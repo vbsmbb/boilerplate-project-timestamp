@@ -24,7 +24,26 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+// The dateTime API endpoint
+app.get("/api/:date", function (req, res) {
+  // Add the statements to get to point C!!!
+  const dateStr = req.params.date;
+  console.log('Date string:',dateStr);
+  const dtRE =  /^\d{1,4}-\d{1,2}-\d{1,2}$/;
+  const msRE = /^\d{1,13}$/;
 
+  if ( dtRE.test(dateStr) ) {
+    let dUTC = new Date(dateStr).toUTCString();
+    let msec = Date.parse(dateStr);
+    res.json({ unix: msec, utc: dUTC }); 
+  } else if ( msRE.test(dateStr) ) {
+    let msec = parseInt(dateStr);
+    let dUTC = new Date(msec).toUTCString();
+    res.json({ unix: msec, utc: dUTC });
+  } else {
+    console.error("Incorrect date string format");
+  }
+});
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
