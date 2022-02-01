@@ -40,7 +40,7 @@ app.get("/api/:date", function (req, res) {
   console.log('dtYfRE:',dtYfRE.test(dateStr));
   const dtYlRE = /^\d{1,2}-\d{1,2}-\d{2,4}$/;
   console.log('dtYlRE:',dtYlRE.test(dateStr));
-  const dtMDY = /^\w{3,} \d{1,2}, \d{2,4}$/;
+  const dtMDY = /\w{3,} \d{1,2}, \d{2,4}/;
   console.log('dtMDY:',dtMDY.test(dateStr));
   const msRE = /^\d{1,13}$/;
   console.log('msRE:',msRE.test(dateStr));
