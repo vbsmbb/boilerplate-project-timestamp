@@ -34,42 +34,23 @@ app.get('/api', (req,res) => {
 app.get("/api/:date", function (req, res) {
   // Add the statements to get to point C!!!
   let dateStr = req.params.date;
-  dateStr.replace(/['"]+/g,'');
   console.log('Date string:',dateStr);
-  const dtYfRE =  /^\d{2,4}-\d{1,2}-\d{1,2}$/;
-  console.log('dtYfRE:',dtYfRE.test(dateStr));
-  const dtYlRE = /^\d{1,2}-\d{1,2}-\d{2,4}$/;
-  console.log('dtYlRE:',dtYlRE.test(dateStr));
-  const dtMDY = /\w{3,} \d{1,2}, \d{2,4}/;
-  console.log('dtMDY:',dtMDY.test(dateStr));
   const msRE = /^\d{1,13}$/;
   console.log('msRE:',msRE.test(dateStr));
-  let dtFnd = false;
-  let dUTC = '';
-  let msec;
 
-  switch (true) {
-    case dtYfRE.test(dateStr) ||
-         dtYlRE.test(dateStr) ||
-         dtMDY.test(dateStr):
-      dUTC = new Date(dateStr).toUTCString();
-      msec = Date.parse(dateStr);
-      dtFnd = true;
-      break;
-    case msRE.test(dateStr):
-      msec = parseInt(dateStr);
-      dUTC = new Date(msec).toUTCString();
-      dtFnd = true;
-      break;
-    case (dateStr === null):
-      dUTC = new Date().toUTCString();
-      msec = Date.parse(dUTC);
-      dtFnd = true;
-      break;
-    default:
-      res.json({error: "Invalid Date"});
+    if (msRE.test(dateStr)) {
+      let dInt = parseInt(dateStr);
+      
+      res.json({ unix: dInt, utc: new Date(dInt).toUTCString() });
+  } else {
+      let dUTC = new Date(dateStr);
+
+      if (dUTC.toString() === "Invalid Date") {
+        res.json({error: "Invalid Date"});
+      } else {
+        res.json({ unix: Date.parse(dUTC), utc: dUTC.toUTCString() }); 
+      }
   }
-  if (dtFnd) { res.json({ unix: msec, utc: dUTC }); }
 });
 
 // listen for requests :)
